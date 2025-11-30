@@ -122,3 +122,66 @@ TODO :
 /!\ Livrable technique :
 * Votre repository doit contenir un script npm run security (ou équivalent) fonctionnel.
 * Le projet final ne doit contenir aucune vulnérabilité critique non justifiée dans npm audit.
+
+### Rapport d'audit automatisé
+
+```
+npm audit
+```
+[insérer la capture d'écran du résultat]
+
+
+### Automatisation CI/CD 
+Nous bloquons les merge request tant que le code ne compile pas et n'est pas propre, et tant qu'il ne passe pas l'audit de sécurité.
+
+```
+name: Code Quality Check
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Lint (ESLint)
+        run: npm run lint
+      - name: Build the project
+        run: npm run build
+```
+Ce script se déclenche lorsqu'une merge request est ouverte pour la branche main, il vérifie que le code compile sans erreur, et que le linter Eslint ne renvoie pas d'erreur.
+
+```
+name: Security Audit
+on:
+  push:
+  pull_request:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+```
+Ce script se déclenche également lors d'une pull request et vérifie qu'il n'y ait pas de failles de sécurité grâce à la commande `npm audit`.
+
+### Autocritique - OWASP
+
+1. OWASP
+2. OWASP
+3. OWASP
