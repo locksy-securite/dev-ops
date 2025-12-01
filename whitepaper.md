@@ -66,6 +66,8 @@ Failles possibles : Pour la protection contre le bruteforce il faut être vigila
 TODO : 
 Justifiez vos choix de paramètres pour Argon2, présentez la structure de données versionnée que vous allez stocker, et décrivez votre plan de défense complet contre les attaques XSS.
 
+Nous utilisons `dompurify` pour protéger notre code html contre les attaque XSS. Cela permet de s'assurer que le html que nous devons insérer dans notre code n'est pas corrompu.
+
 
 ## Sécurité Back-End
 
@@ -101,6 +103,10 @@ TODO :
 * Installation et activation de `helmet` dans `main.ts`.
 * Configuration explicite de `enableCors` (pas de `origin: *`).
 * Utilisation de `@nestjs/config` pour lire les variables d'environnement.
+
+
+![fichier .env](backend_gitignore.png)
+
 
 
 ## Audit de sécurité et industrialisation
