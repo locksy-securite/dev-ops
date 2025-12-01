@@ -51,7 +51,7 @@ Failles possibles : Pour la protection contre le bruteforce il faut être vigila
 ![Schéma de chiffrement](schema_chiffrement.drawio.png)
 
 
-## Sécurité Client-Side (Front-End)
+## Sécurité Front-End
 
 TODO #front-end: 
 > Justifiez vos choix de paramètres pour Argon2, présentez la structure de données versionnée que vous allez stocker, et décrivez votre plan de défense complet contre les attaques XSS.
@@ -100,7 +100,7 @@ TODO #back-end :
 3. Gestion des secrets :
 ![fichier .env](backend_gitignore.png)
 
-TODO : 
+TODO #front-end & TODO #back-end & TODO #dev-ops (on peut s'en occuper côté devOps mais il faut juste nous indiquer où c'est dans le code pour qu'on comprenne et qu'on explique): 
 > Exemple de code montrant l'utilisation du `ConfigService` pour injecter une variable sensible.
 
 
