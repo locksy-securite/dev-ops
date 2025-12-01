@@ -20,6 +20,38 @@ MERCREDI 26/11
 VENDREDI 28/11
 > discussion sur l'avancement actuel du projet pour être prêts pour l'évaluation
 
+Côté devOps :
+- Création d'un compte pour GCP
+- Mise en ligne du front
+- Audit de sécurité
+- Rédaction des TODO pour le whitepaper
+- Communication avec l'équipe sur avancement et ce qu'il reste à faire
+
+Côté Front :
+- Argon2 et inscription
+
+Côté Back :
+?
+
+---
+LUNDI 01/12
+> dernière séance avant évaluation
+
+Côté Front :
+- Très bon avancement, reste qques détails puis backend minimal sans sécurité 
+
+Côté DevOps :
+- Création de compte neon et partage avec back pour la création de la bdd
+- recherches owasp
+- communication avec l'équipe pour tenter de résoudre les conflits
+- Avancement sur jalons de validation et livrables
+- README global
+- configuration de gitleaks et ajout au workflow
+
+Côté Back :
+- communication difficile, tentative de mise en commun de l'avancement et des connaissances
+- création de la bdd sur neon
+
 ---
 VENDREDI 5/12
 

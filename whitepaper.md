@@ -77,7 +77,7 @@ TODO :
 => Votre Whitepaper doit prouver que votre application est construite avec le principe de Security by Design, et non sécurisée après coup.
 
 
-## Authentficiation & sécurité des accès
+## Authentificiation & sécurité des accès
 
 TODO :
 1. Politique de Mots de Passe : Documentez l'algorithme choisi (bcrypt/argon2) et le coût paramétré (ex: salt rounds). Expliquez pourquoi ce coût est un bon équilibre pour votre infra.
@@ -162,8 +162,9 @@ Ce script se déclenche lorsqu'une merge request est ouverte pour la branche mai
 ```
 name: Security Audit
 on:
-  push:
   pull_request:
+    branches:
+      - main
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -182,6 +183,6 @@ Ce script se déclenche également lors d'une pull request et vérifie qu'il n'y
 
 ### Autocritique - OWASP
 
-1. OWASP
-2. OWASP
-3. OWASP
+1. Injection : Les requêtes SQL ne sont pas concaténées, nous utilisons TypeORM partout.
+2. Authentification : Les mots de passes sont hachés avec bycrypt dans le front et le back, et nous limitons à 3 tentatives échouées.
+3. Composants vulnérabes : npm audit est vert. (cf partie sur le rapport d'audit)
