@@ -53,10 +53,7 @@ Failles possibles : Pour la protection contre le bruteforce il faut être vigila
 
 ## Sécurité Front-End
 
-TODO #front-end: 
-> Justifiez vos choix de paramètres pour Argon2, présentez la structure de données versionnée que vous allez stocker, et décrivez votre plan de défense complet contre les attaques XSS.
-
-#### Choix des paramètres Argon2
+### Choix des paramètres Argon2
 
 Nous utilisons **Argon2id** côté client pour dériver la clé maître à partir du mot de passe. Les paramètres retenus sont :
 
@@ -66,7 +63,7 @@ Nous utilisons **Argon2id** côté client pour dériver la clé maître à parti
 
 Ce réglage offre un bon compromis entre sécurité et performance, avec possibilité d’ajustement ultérieur.
 
-#### Structure de données versionnée (enveloppe JSON)
+### Structure de données versionnée (enveloppe JSON)
 
 Chaque objet chiffré est stocké sous forme de JSON auto-descriptif et versionné, incluant la recette cryptographique :
 ```
@@ -80,7 +77,7 @@ data_b64: base64(nonce || ciphertext) → données chiffrées avec nonce
 
 Cette structure garantit l’évolutivité : le front vérifie `version` avant déchiffrement, ce qui permet de changer d’algorithme ou de paramètres sans casser les anciens enregistrements.
 
-#### Plan de défense contre les attaques XSS
+### Plan de défense contre les attaques XSS
 
 - **Échappement natif React** : React échappe automatiquement le contenu inséré via JSX, réduisant fortement les risques d’injection.
 - **Sanitization** : utilisation de **DOMPurify** pour nettoyer tout HTML provenant d’utilisateurs ou d’extensions.
@@ -91,7 +88,7 @@ Cette structure garantit l’évolutivité : le front vérifie `version` avant d
 
 ## Sécurité Back-End
 
-1. La Validation des Données : 
+### 1. La Validation des Données : 
 TODO #back-end :
   > Expliquez comment vous utilisez les DTOs et les `ValidationPipes` dans NestJS pour filtrer strictement les entrées.
 
@@ -108,7 +105,7 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
 - **Performance** : ils restent suffisamment rapides pour garantir une expérience fluide dans le navigateur.
 
 
-2. La Stratégie Anti-Injection : 
+### 2. La Stratégie Anti-Injection : 
   TODO #back-end :
   > Démontrez que vos requêtes (SQL ou NoSQL) sont immunisées contre les injections (utilisation de l'ORM, requêtes paramétrées…) et expliquez pourquoi.
 
@@ -124,7 +121,7 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
     * TODO #back-end : 
     > Incluez un schéma explicatif de votre flux (Login -> Création JWT -> Stockage Cookie/LocalStorage -> Vérification Guard).
 
-#### Flux d’authentification
+### Flux d’authentification
 
 ```
 [Utilisateur navigateur]
@@ -135,17 +132,17 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
 
 [Serveur API]
 5 • Vérifie le payload et le hash ; si valide :
-- génère accessToken (JWT courte durée)
-- crée cookie Refresh Token (HttpOnly)
+    - génère accessToken (JWT courte durée)
+    - crée cookie Refresh Token (HttpOnly)
 6 • Réponse : { accessToken, user }
 → accessToken stocké uniquement en mémoire côté front
 
 [Client session]
 7 • Axios intercepte les requêtes et ajoute Authorization: Bearer <accessToken>
 8 • À l’expiration de l’accessToken :
-- POST /auth/refresh
-- navigateur envoie automatiquement le cookie HttpOnly (refresh)
-- serveur renvoie un nouvel accessToken, stocké en mémoire
+    - POST /auth/refresh
+    - navigateur envoie automatiquement le cookie HttpOnly (refresh)
+    - serveur renvoie un nouvel accessToken, stocké en mémoire
 
 [Guard / Protection des routes]
 - RequireAuth lit le contexte Auth (isAuthenticated, initializing)
@@ -153,11 +150,7 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
 - Si authentifié → accès au dashboard
 ```
 
-
-    * TODO #front-end : 
-    > Justifiez le choix du mode de stockage (ex: "Nous utilisons des cookies HttpOnly pour prévenir le vol de token via XSS, contrairement au LocalStorage qui est accessible par tout script JS").
-
-#### Choix du mode de stockage des tokens
+### Choix du mode de stockage des tokens
 
 - **Refresh tokens** : stockés dans des **cookies HttpOnly + Secure + SameSite**.
 → Ils ne sont jamais accessibles via `document.cookie` et sont envoyés automatiquement par le navigateur lors des requêtes vers le domaine.
@@ -167,8 +160,9 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
 
 Ce modèle, implémenté dans l’`AuthProvider`, combine sécurité (protection contre XSS et vol de tokens) et praticité (renouvellement automatique via interceptor).
 
+### Rôles utilisateur
 
-3. Pour le moment dans notre MVP, nous n'avons qu'un seul type d'utilisateur : l'utilisateur standard qui s'inscrit et se connecte. Techniquement il existe aussi le simple visiteur qui ne peut accéder qu'à la page d'accueil / d'inscription, et qui devient utilisateur aussitôt qu'il est inscrit.  
+Pour le moment dans notre MVP, nous n'avons qu'un seul type d'utilisateur : l'utilisateur standard qui s'inscrit et se connecte. Techniquement il existe aussi le simple visiteur qui ne peut accéder qu'à la page d'accueil / d'inscription, et qui devient utilisateur aussitôt qu'il est inscrit.  
 
 
 ## Sécurité de l'infrastructure
