@@ -88,11 +88,24 @@ Cette structure garantit l’évolutivité : le front vérifie `version` avant d
 
 ## Sécurité Back-End
 
-### 1. La Validation des Données : 
-TODO #back-end :
-  > Expliquez comment vous utilisez les DTOs et les `ValidationPipes` dans NestJS pour filtrer strictement les entrées.
+### Validation des Données
 
-#### Politique de mots de passe
+Nous utilisons des DTOs (Data Transfer Objects) pour définir strictement la structure des données entrantes dans nos contrôleurs NestJS. Le ValidationPipe global appliqué dans `main.ts` valide automatiquement ces DTOs en utilisant des décorateurs comme `@IsEmail`, `@IsString`, etc., rejetant toute entrée non conforme avant qu'elle n'atteigne la logique métier.
+
+### Stratégie Anti-Injection : 
+
+Toutes nos requêtes SQL utilisent TypeORM, un ORM qui paramètre automatiquement les requêtes, séparant les données des commandes SQL via des placeholders. Cela rend les injections SQL impossibles car les entrées utilisateur ne sont jamais concaténées directement dans les requêtes.
+
+### Security by Design
+
+Notre application est construite avec le principe Security by Design : la sécurité est intégrée dès la conception, avec validation des entrées, ORM pour les requêtes, et chiffrement end-to-end, plutôt que d'ajouter des mesures après coup.
+
+
+## Authentificiation & sécurité des accès
+
+### Politique de mots de passe
+
+#### Côté front
 
 Nous utilisons **Argon2id** côté client comme KDF pour dériver la clé maître à partir du mot de passe. Côté serveur, seul le *verifier* dérivé (hash) et le *salt* sont stockés.
 
@@ -104,24 +117,13 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
 - **Sécurité** : ils ralentissent fortement les attaques hors-ligne, en particulier celles menées avec GPU ou ASIC.
 - **Performance** : ils restent suffisamment rapides pour garantir une expérience fluide dans le navigateur.
 
+#### Côté back
 
-### 2. La Stratégie Anti-Injection : 
-  TODO #back-end :
-  > Démontrez que vos requêtes (SQL ou NoSQL) sont immunisées contre les injections (utilisation de l'ORM, requêtes paramétrées…) et expliquez pourquoi.
-
-=> TODO #back-end : 
-  > Votre Whitepaper doit prouver que votre application est construite avec le principe de Security by Design, et non sécurisée après coup.
-
-
-## Authentificiation & sécurité des accès
-
-1. TODO #back-end & TODO #front-end :
-  > Politique de Mots de Passe : Documentez l'algorithme choisi (bcrypt/argon2) et le coût paramétré (ex: salt rounds). Expliquez pourquoi ce coût est un bon équilibre pour votre infra.
-2. Architecture d'Authentification :
-    * TODO #back-end : 
-    > Incluez un schéma explicatif de votre flux (Login -> Création JWT -> Stockage Cookie/LocalStorage -> Vérification Guard).
+Nous utilisons **bcrypt** pour le hachage des mots de passe côté client et serveur, avec un coût de 12 rounds. Ce coût offre un équilibre entre sécurité résistante au bruteforce hors ligne et performance acceptable pour notre infrastructure, sans ralentir l'expérience utilisateur.
 
 ### Flux d’authentification
+
+#### Côté front
 
 ```
 [Utilisateur navigateur]
@@ -150,6 +152,11 @@ Les paramètres choisis (`memoryCost = 65 536`, `timeCost = 3`, `parallelism =
 - Si authentifié → accès au dashboard
 ```
 
+#### Côté back
+
+* Flux back-end : Login -> Vérification hash mot de passe -> Création JWT (access + refresh) -> Stockage en cookies `HttpOnly` -> Guards vérifient JWT sur routes protégées.
+* Nous utilisons des cookies `HttpOnly` pour stocker les tokens JWT, prévenant le vol via XSS contrairement au LocalStorage accessible par tout script JS.
+
 ### Choix du mode de stockage des tokens
 
 - **Refresh tokens** : stockés dans des **cookies HttpOnly + Secure + SameSite**.
@@ -167,24 +174,14 @@ Pour le moment dans notre MVP, nous n'avons qu'un seul type d'utilisateur : l'ut
 
 ## Sécurité de l'infrastructure
 
-/!\ Livrable technique :  
-- Installation et activation de `helmet` dans `main.ts`.
-- Configuration explicite de `enableCors` (pas de `origin: *`).
-- Utilisation de `@nestjs/config` pour lire les variables d'environnement.
+Notre configuration NestJS restreint les origines à 'https://startup.com', 'https://admin.com' uniquement, rejetant toute autre origine. Cela empêche les attaques CSRF et limite l'accès aux domaines de confiance, évitant les requêtes non autorisées depuis des sites malveillants.
 
-1. TODO #back-end : 
-  > Configuration CORS : Montrez votre configuration NestJS et expliquez pourquoi vous avez restreint les origines (quels domaines sont autorisés et pourquoi).
-
-2. TODO #back-end & TODO #front-end :
-  > En-têtes HTTP : Listez les headers activés par Helmet dans votre projet et choisissez-en deux (ex: HSTS et X-Frame-Options) pour expliquer concrètement contre quelle attaque ils vous protègent.
+Helmet active des headers comme Content-Security-Policy, HSTS, X-Frame-Options, X-Content-Type-Options, etc. HSTS force les connexions HTTPS, protégeant contre les attaques man-in-the-middle ; X-Frame-Options empêche le clickjacking en interdisant l'intégration dans des frames.
 
 3. Gestion des secrets :
 ![fichier .env](backend_gitignore.png)
 
-TODO #front-end & TODO #back-end & TODO #dev-ops (on peut s'en occuper côté devOps mais il faut juste nous indiquer où c'est dans le code pour qu'on comprenne et qu'on explique): 
-> Exemple de code montrant l'utilisation du `ConfigService` pour injecter une variable sensible.
-
-#### #front-end
+#### Côté front
 
 Côté front, les variables sensibles ne doivent pas être exposées. Seules les variables publiques (comme l’URL de l’API) sont injectées via le fichier `.env`.
 
@@ -195,6 +192,9 @@ VITE_API_URL={API_URL}
 
 Cette valeur est ensuite utilisée par le code React/Vite pour configurer les appels réseau, sans jamais contenir de secrets.
 
+#### Côté back
+Exemple dans `main.ts` : `const port = configService.get<number>('NEST_PORT') || 3000;` et dans `auth.service.ts` : `secret: this.configService.get<string>('JWT_SECRET')`. Cela injecte les variables sensibles depuis `.env` sans les hardcoder.
+Nous avons depuis géré les variables d'environnement avec Google Cloud Platform directement, donc sommes repassés sur l'utilisation de la syntaxe `process.env.VARIABLE`.
 
 
 ## Audit de sécurité et industrialisation
@@ -204,10 +204,11 @@ Cette valeur est ensuite utilisée par le code React/Vite pour configurer les ap
 ```
 npm audit
 ```
+
+Résultat de l'audit : Le projet ne contient aucune vulnérabilité critique non justifiée, car la vulnérabilité trouvée est dans une dépendance indirecte et est résolue par via `npm audit fix`.
+
 TODO #dev-ops : 
 > [insérer la capture d'écran du résultat]
-> Le projet final ne doit contenir aucune vulnérabilité critique non justifiée dans npm audit. 
-
 
 ### Automatisation CI/CD 
 Nous bloquons les merge request tant que le code ne compile pas et n'est pas propre, et tant qu'il ne passe pas l'audit de sécurité.
