@@ -174,7 +174,7 @@ Pour le moment dans notre MVP, nous n'avons qu'un seul type d'utilisateur : l'ut
 
 ## Sécurité de l'infrastructure
 
-Notre configuration NestJS restreint les origines à 'https://startup.com', 'https://admin.com' uniquement, rejetant toute autre origine. Cela empêche les attaques CSRF et limite l'accès aux domaines de confiance, évitant les requêtes non autorisées depuis des sites malveillants.
+Notre configuration NestJS restreint les origines à l'URL de l'API front uniquement, rejetant toute autre origine. Cela empêche les attaques CSRF et limite l'accès aux domaines de confiance, évitant les requêtes non autorisées depuis des sites malveillants.
 
 Helmet active des headers comme Content-Security-Policy, HSTS, X-Frame-Options, X-Content-Type-Options, etc. HSTS force les connexions HTTPS, protégeant contre les attaques man-in-the-middle ; X-Frame-Options empêche le clickjacking en interdisant l'intégration dans des frames.
 
@@ -207,8 +207,16 @@ npm audit
 
 Résultat de l'audit : Le projet ne contient aucune vulnérabilité critique non justifiée, car la vulnérabilité trouvée est dans une dépendance indirecte et est résolue par via `npm audit fix`.
 
-TODO #dev-ops : 
-> [insérer la capture d'écran du résultat]
+Résultat : pour l'instant soucis de Cloudflare qui nous empêchent d'exécuter la commande
+```html
+<html>
+ <head><title>500 Internal Server Error</title></head>
+ <body>
+  <center><h1>500 Internal Server Error</h1></center>
+  <hr><center>cloudflare</center>
+ </body>
+</html>
+```
 
 ### Automatisation CI/CD 
 Nous bloquons les merge request tant que le code ne compile pas et n'est pas propre, et tant qu'il ne passe pas l'audit de sécurité.
@@ -263,15 +271,10 @@ Ce script se déclenche également lors d'une pull request et vérifie qu'il n'y
 
 ### Autocritique - OWASP
 
-TODO #dev-ops & TODO #back-end :
-> Pour chaque point, expliquez en une phrase comment votre architecture NestJS le respecte (ex: "Injection SQL : Nous utilisons TypeORM qui sépare strictement les données de la requête via des placeholders, rendant l'injection impossible").
-
-1. Injection : Les requêtes SQL ne sont pas concaténées, nous utilisons TypeORM partout.
-2. Authentification : Les mots de passes sont hachés avec bycrypt dans le front et le back, et nous limitons à 3 tentatives échouées.
+1. Injection : Nous utilisons TypeORM pour les requêtes SQL afin de séparer les données via les placeholders et empêcher l'injection.
+2. Authentification : Nous utilisons Argon2 dans le front et bcrypt dans le back afin de hacher les mots de passe. Argon2 permet de dériver la clé à partir du mot de passe maître, et ainsi le serveur n'a pas accès aux données.
 3. Composants vulnérabes : 
-  TODO #dev-ops (need TODO #back-end) 
-  > npm audit est vert. (cf partie sur le rapport d'audit)
-
+  > Voir la partie sur le rapport d'audit, nous ne pouvons pas run la commande pour le moment.
 
 ### Stratégie de logs 
 
