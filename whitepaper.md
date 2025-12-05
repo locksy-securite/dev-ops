@@ -207,16 +207,7 @@ npm audit
 
 Résultat de l'audit : Le projet ne contient aucune vulnérabilité critique non justifiée, car la vulnérabilité trouvée est dans une dépendance indirecte et est résolue par via `npm audit fix`.
 
-Résultat : pour l'instant soucis de Cloudflare qui nous empêchent d'exécuter la commande
-```html
-<html>
- <head><title>500 Internal Server Error</title></head>
- <body>
-  <center><h1>500 Internal Server Error</h1></center>
-  <hr><center>cloudflare</center>
- </body>
-</html>
-```
+![résultats npm audit](audit_result.png)
 
 ### Automatisation CI/CD 
 Nous bloquons les merge request tant que le code ne compile pas et n'est pas propre, et tant qu'il ne passe pas l'audit de sécurité.
