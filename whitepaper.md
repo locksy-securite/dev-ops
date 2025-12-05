@@ -264,8 +264,7 @@ Ce script se déclenche également lors d'une pull request et vérifie qu'il n'y
 
 1. Injection : Nous utilisons TypeORM pour les requêtes SQL afin de séparer les données via les placeholders et empêcher l'injection.
 2. Authentification : Nous utilisons Argon2 dans le front et bcrypt dans le back afin de hacher les mots de passe. Argon2 permet de dériver la clé à partir du mot de passe maître, et ainsi le serveur n'a pas accès aux données.
-3. Composants vulnérabes : 
-  > Voir la partie sur le rapport d'audit, nous ne pouvons pas run la commande pour le moment.
+3. Vulnérabilité: La commande `npm audit` ne révèle aucune vulnérabilité dans le projet. L'installation de l'ensemble des dépendances de versions récentes et sécurisées est un des exemples qui peux expliquer l'absence de vulnérabilité. 
 
 ### Stratégie de logs 
 
