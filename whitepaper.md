@@ -196,7 +196,7 @@ Cette valeur est ensuite utilisée par le code React/Vite pour configurer les ap
 
 #### Côté back
 Exemple dans `main.ts` : `const port = configService.get<number>('NEST_PORT') || 3000;` et dans `auth.service.ts` : `secret: this.configService.get<string>('JWT_SECRET')`. Cela injecte les variables sensibles depuis `.env` sans les hardcoder.
-Nous avons depuis géré les variables d'environnement avec Google Cloud Platform directement, donc sommes repassés sur l'utilisation de la syntaxe `process.env.VARIABLE`.
+Nous avons depuis géré les variables d'environnement avec Google Cloud Platform directement, donc sommes repassés sur l'utilisation de la syntaxe `process.env.VARIABLE`. Nous intégrons ces variables via les Secrets gérés directement par GCP pour plus de sécurité.
 
 
 ## Audit de sécurité et industrialisation
@@ -207,7 +207,7 @@ Nous avons depuis géré les variables d'environnement avec Google Cloud Platfor
 npm audit
 ```
 
-Résultat de l'audit : Le projet ne contient aucune vulnérabilité critique non justifiée, car la vulnérabilité trouvée est dans une dépendance indirecte et est résolue par via `npm audit fix`.
+Résultat de l'audit : Le projet ne contient aucune vulnérabilité critique non justifiée, car la vulnérabilité trouvée est dans une dépendance indirecte et est résolue par `npm audit fix`.
 
 ![résultats npm audit](audit_result.png)
 
