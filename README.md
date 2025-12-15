@@ -5,6 +5,16 @@
 __Locksy__ est une application sécurisée de gestion de mots de passe. Elle permet aux utilisateurs de s'inscrire, puis se connecter et enregistrer leurs mots de passe.  
 Le développement a été divisé en 3 grandes parties : le front, le back, et le devOps.
 
+### Les membres du groupe
+
+ABOUANANE Badia : @B4diaa
+BOURICH Théo : @cryo-ghost
+DALLAIS Chloé : @c-dal
+DIAW Ndeye Seynabou : @Zaaynab10 & @sowla
+HUANG Edric : @FireAEM
+LAI Lucas : @LLAI21
+TORKGHASHGHAIE Kavé : @Kave2005
+
 
 ## Organisation GitHub
 
