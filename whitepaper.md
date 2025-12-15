@@ -14,7 +14,7 @@ Failles possibles : Pour la protection contre le bruteforce il faut être vigila
 
 ## Schéma de Chiffrement 
 
-### Inscription : 
+### Inscription 
 
 - L’utilisateur saisit son mot de passe maître. 
 - Un salt aléatoire unique est généré côté client. 
@@ -24,7 +24,7 @@ Failles possibles : Pour la protection contre le bruteforce il faut être vigila
 - La clé locale n’est jamais transmise au serveur. 
 
 
-### Connexion : 
+### Connexion 
 
 - Le serveur renvoie le salt associé à l’utilisateur. 
 - Le client régénère la clé locale avec Argon2id (mot de passe + salt). 
@@ -32,7 +32,7 @@ Failles possibles : Pour la protection contre le bruteforce il faut être vigila
 - Le serveur ne fait que vérifier le hash pour authentifier l’utilisateur, sans jamais voir la clé ni les données en clair. 
 
 
-### Chiffrement des données sensibles : 
+### Chiffrement des données sensibles 
 
 - La clé locale dérivée est utilisée pour générer une clé maître. 
 - Cette clé maître chiffre toutes les données sensibles avec AESGCM côté client. 
@@ -92,7 +92,7 @@ Cette structure garantit l’évolutivité : le front vérifie `version` avant d
 
 Nous utilisons des DTOs (Data Transfer Objects) pour définir strictement la structure des données entrantes dans nos contrôleurs NestJS. Le ValidationPipe global appliqué dans `main.ts` valide automatiquement ces DTOs en utilisant des décorateurs comme `@IsEmail`, `@IsString`, etc., rejetant toute entrée non conforme avant qu'elle n'atteigne la logique métier.
 
-### Stratégie Anti-Injection : 
+### Stratégie Anti-Injection 
 
 Toutes nos requêtes SQL utilisent TypeORM, un ORM qui paramètre automatiquement les requêtes, séparant les données des commandes SQL via des placeholders. Cela rend les injections SQL impossibles car les entrées utilisateur ne sont jamais concaténées directement dans les requêtes.
 
@@ -178,7 +178,7 @@ Notre configuration NestJS restreint les origines à l'URL de l'API front unique
 
 Helmet active des headers comme Content-Security-Policy, HSTS, X-Frame-Options, X-Content-Type-Options, etc. HSTS force les connexions HTTPS, protégeant contre les attaques man-in-the-middle ; X-Frame-Options empêche le clickjacking en interdisant l'intégration dans des frames.
 
-### Gestion des secrets :
+### Gestion des secrets  
 
 Les fichiers `.env` sont ignorés par Git afin de ne pas se retrouver exposés en ligne.
 ![fichier .env](backend_gitignore.png)
