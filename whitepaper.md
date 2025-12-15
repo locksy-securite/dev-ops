@@ -178,7 +178,9 @@ Notre configuration NestJS restreint les origines à l'URL de l'API front unique
 
 Helmet active des headers comme Content-Security-Policy, HSTS, X-Frame-Options, X-Content-Type-Options, etc. HSTS force les connexions HTTPS, protégeant contre les attaques man-in-the-middle ; X-Frame-Options empêche le clickjacking en interdisant l'intégration dans des frames.
 
-3. Gestion des secrets :
+### Gestion des secrets :
+
+Les fichiers `.env` sont ignorés par Git afin de ne pas se retrouver exposés en ligne.
 ![fichier .env](backend_gitignore.png)
 
 #### Côté front
@@ -210,6 +212,7 @@ Résultat de l'audit : Le projet ne contient aucune vulnérabilité critique non
 ![résultats npm audit](audit_result.png)
 
 ### Automatisation CI/CD 
+
 Nous bloquons les merge request tant que le code ne compile pas et n'est pas propre, et tant qu'il ne passe pas l'audit de sécurité.
 
 ```
@@ -259,15 +262,10 @@ jobs:
 ```
 Ce script se déclenche également lors d'une pull request et vérifie qu'il n'y ait pas de failles de sécurité grâce à la commande `npm audit`.
 
+Les variables d'environnement ne sont pas injectées par GitHub, nous utilisons directement la gestion des secrets via GCP.
 
 ### Autocritique - OWASP
 
 1. Injection : Nous utilisons TypeORM pour les requêtes SQL afin de séparer les données via les placeholders et empêcher l'injection.
 2. Authentification : Nous utilisons Argon2 dans le front et bcrypt dans le back afin de hacher les mots de passe. Argon2 permet de dériver la clé à partir du mot de passe maître, et ainsi le serveur n'a pas accès aux données.
 3. Vulnérabilité: La commande `npm audit` ne révèle aucune vulnérabilité dans le projet. L'installation de l'ensemble des dépendances de versions récentes et sécurisées est un des exemples qui peux expliquer l'absence de vulnérabilité. 
-
-### Stratégie de logs 
-
-TODO #dev-ops (need TODO #back-end)
-> Montrez un exemple concret de log généré par votre application (lors d'un login ou d'une erreur).
-  Prouvez que ce log est "propre" (anonymisé, pas de mot de passe en clair).
