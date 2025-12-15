@@ -31,6 +31,3 @@ En ce qui concerne les pull request (PR), elles ne sont validées que si le code
 
 Collez ce lien dans votre navigateur :
 `https://front-end-923658116766.europe-west1.run.app/`
-
-
-## Pour tester localement
