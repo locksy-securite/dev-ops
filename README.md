@@ -31,3 +31,12 @@ En ce qui concerne les pull request (PR), elles ne sont validées que si le code
 
 Collez ce lien dans votre navigateur :
 `https://front-end-923658116766.europe-west1.run.app/`
+
+### Connexion Front / Back
+
+Le front-end et le back-end communiquent via une API.
+L’URL de l’API est définie dans le fichier .env du front-end. Le front utilise cette URL pour envoyer des requêtes au back-end et récupérer les données.
+
+Côté back-end, la configuration CORS est définie dans le fichier .env du back-end. L’URL du front-end autorisée y est renseignée afin de permettre l’accès à l’API.
+
+La connexion entre le front et le back se fait donc via des appels API et une configuration par variables d’environnement.
